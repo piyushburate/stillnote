@@ -1,0 +1,55 @@
+name: stillnote
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.3.1 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cloud_firestore: ^4.17.0
+  file_picker: ^8.0.2
+  firebase_auth: ^4.19.2
+  firebase_core: ^2.30.0
+  flutter_bloc: ^8.1.5
+  flutter_svg: ^2.0.10+1
+  go_router: ^13.2.4
+  google_fonts: ^6.2.1
+  http: ^1.2.1
+  scrollable_positioned_list: ^0.3.8
+  share_plus_dialog: ^1.1.1
+  url_strategy: ^0.2.0
+  youtube_player_iframe: ^5.1.2
+  shared_preferences: ^2.2.3
+  flutter_quill: ^9.3.9
+  cupertino_icons: ^1.0.8
+  flutter_native_splash: ^2.4.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icons/
+
+flutter_native_splash:
+  color: '#FFFFFF'
+  color_dark: '#494949'
+  image: assets/images/app_icon_black.png
+  image_dark: assets/images/app_icon_white.png
+  web_image_mode: center
+  android_gravity: center
+  ios_content_mode: center
+  fullscreen: true
+
+  android_12:
+    color: '#FFFFFF'
+    color_dark: '#494949'
+    image: assets/images/app_icon_black.png
+    image_dark: assets/images/app_icon_white.png

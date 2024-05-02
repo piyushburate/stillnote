@@ -1,0 +1,151 @@
+import 'package:flutter/material.dart';
+import 'package:stillnote/screens/note/note_sections/note_section_type.dart';
+import 'package:stillnote/utils/x_icons.dart';
+import 'package:stillnote/widgets/svg_icon.dart';
+
+class AddNoteSectionDialog extends StatefulWidget {
+  final void Function(NoteSectionType? noteSectionType) close;
+  const AddNoteSectionDialog({
+    super.key,
+    required this.close,
+  });
+
+  @override
+  State<AddNoteSectionDialog> createState() => _AddNoteSectionDialogState();
+}
+
+class _AddNoteSectionDialogState extends State<AddNoteSectionDialog> {
+  final _searchCtrl = TextEditingController();
+  String searchText = '';
+  final sectionList = NoteSectionType.values;
+  // int selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Dialog(
+      backgroundColor: colorScheme.background.withOpacity(0.1),
+      insetPadding: const EdgeInsets.all(25),
+      child: Container(
+        width: double.infinity,
+        constraints: const BoxConstraints(maxWidth: 340),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          border: Border.fromBorderSide(
+            BorderSide(width: 0.3, color: colorScheme.secondary),
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: getDialogBody(colorScheme),
+      ),
+    );
+  }
+
+  Widget getDialogBody(ColorScheme colorScheme) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Add Section',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
+                  color: colorScheme.primary,
+                ),
+              ),
+              IconButton(
+                tooltip: 'Close',
+                onPressed: () => widget.close(null),
+                iconSize: 30,
+                color: colorScheme.secondary,
+                icon: const Icon(Icons.close),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Material(
+            color: colorScheme.secondary.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(5),
+            child: TextField(
+              controller: _searchCtrl,
+              onChanged: (value) {
+                setState(() {
+                  searchText = value.toLowerCase();
+                });
+              },
+              textInputAction: TextInputAction.search,
+              decoration: getSearchTextFieldDecoration(),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Flexible(
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemCount: sectionList.length,
+              separatorBuilder: (context, index) {
+                if (searchText.isNotEmpty &&
+                    !sectionList[index]
+                        .title
+                        .toLowerCase()
+                        .contains(searchText)) {
+                  return const SizedBox();
+                }
+                return const SizedBox(height: 5);
+              },
+              itemBuilder: (context, index) {
+                if (searchText.isNotEmpty &&
+                    !sectionList[index]
+                        .title
+                        .toLowerCase()
+                        .contains(searchText)) {
+                  return const SizedBox();
+                }
+                return Material(
+                  borderRadius: BorderRadius.circular(5),
+                  clipBehavior: Clip.hardEdge,
+                  type: MaterialType.transparency,
+                  child: ListTile(
+                    tileColor: colorScheme.surface,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                    leading: sectionList[index].icon,
+                    trailing: IconButton(
+                      onPressed: () {
+                        widget.close(sectionList[index]);
+                      },
+                      icon: const Icon(Icons.add),
+                    ),
+                    title: Text(sectionList[index].title),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  InputDecoration getSearchTextFieldDecoration() {
+    return const InputDecoration(
+      border: InputBorder.none,
+      hintText: "Search",
+      prefixIcon: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: SvgIcon(XIcons.search),
+      ),
+      contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+    );
+  }
+}
