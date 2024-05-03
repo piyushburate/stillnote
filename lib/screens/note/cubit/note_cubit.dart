@@ -121,9 +121,9 @@ class NoteCubit extends Cubit<NoteState> {
     ));
   }
 
-  void deleteNoteSection(NoteEditorState state, String sectionID) async {
-    state.note.sectionList.remove(sectionID);
-    state.sections.removeWhere((e) => e.id == sectionID);
+  void deleteNoteSection(NoteEditorState state, NoteSection section) async {
+    state.note.sectionList.remove(section.id);
+    state.sections.removeWhere((e) => e.id == section.id);
     await FirebaseFirestore.instance
         .collection("notes")
         .doc(state.note.id)
@@ -132,8 +132,9 @@ class NoteCubit extends Cubit<NoteState> {
         .collection("notes")
         .doc(state.note.id)
         .collection("sections")
-        .doc(sectionID)
+        .doc(section.id)
         .delete();
+    await section.deleteResources(state);
     onNoteModified();
     emit(NoteEditorState(
       note: state.note,

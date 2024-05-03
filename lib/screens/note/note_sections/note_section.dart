@@ -49,5 +49,7 @@ class NoteSection {
     throw UnimplementedError();
   }
 
+  Future<void> deleteResources(NoteEditorState state) async {}
+
   void initialAction(BuildContext context) {}
 }

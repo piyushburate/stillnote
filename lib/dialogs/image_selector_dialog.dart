@@ -1,18 +1,23 @@
 import 'dart:io';
 
+import 'package:cross_file/cross_file.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:stillnote/utils/x_functions.dart';
 import 'package:stillnote/utils/x_icons.dart';
 import 'package:stillnote/utils/x_widgets.dart';
 import 'package:stillnote/widgets/svg_icon.dart';
 
 class ImageSelectorDialog extends StatefulWidget {
   final void Function(String? url) close;
+  final String uploadFolderPath;
   const ImageSelectorDialog({
     super.key,
     required this.close,
+    required this.uploadFolderPath,
   });
 
   @override
@@ -21,8 +26,9 @@ class ImageSelectorDialog extends StatefulWidget {
 
 class _ImageSelectorDialogState extends State<ImageSelectorDialog> {
   final _urlCtrl = TextEditingController();
-  ImageProvider? _imageProvider;
+  ImageProvider? imageProvider;
   String? imagePath;
+  XFile? selectedFile;
   bool isValidated = false;
   bool loading = false;
 
@@ -43,13 +49,8 @@ class _ImageSelectorDialogState extends State<ImageSelectorDialog> {
         constraints: const BoxConstraints(maxWidth: 340),
         decoration: BoxDecoration(
           color: colorScheme.surface,
-          border: Border.fromBorderSide(
-            BorderSide(width: 0.3, color: colorScheme.secondary),
-          ),
-          borderRadius: const BorderRadius.horizontal(
-            left: Radius.circular(4),
-            right: Radius.circular(10),
-          ),
+          border: Border.all(width: 0.3, color: colorScheme.secondary),
+          borderRadius: BorderRadius.circular(10),
         ),
         child: getCreateForm(colorScheme),
       ),
@@ -89,7 +90,7 @@ class _ImageSelectorDialogState extends State<ImageSelectorDialog> {
           textInputAction: TextInputAction.done,
           validator: (value) {
             if (!isValidated) {
-              return "Invalid URL or Error fetching image!";
+              return "Invalid URL or Error while fetching image!";
             }
             return null;
           },
@@ -99,7 +100,8 @@ class _ImageSelectorDialogState extends State<ImageSelectorDialog> {
               final response = await http.head(Uri.parse(value));
               if (response.statusCode == 200) {
                 imagePath = value;
-                _imageProvider = NetworkImage(imagePath!);
+                imageProvider = NetworkImage(imagePath!);
+                selectedFile = XFile(value);
                 isValidated = true;
               }
             }
@@ -118,10 +120,16 @@ class _ImageSelectorDialogState extends State<ImageSelectorDialog> {
             if (result != null) {
               if (kIsWeb) {
                 var bytes = result.files.first.bytes;
-                if (bytes != null) _imageProvider = MemoryImage(bytes);
+                if (bytes != null) {
+                  imageProvider = MemoryImage(bytes);
+                  selectedFile = result.files.first.xFile;
+                }
               } else {
                 var path = result.files.first.path;
-                if (path != null) _imageProvider = FileImage(File(path));
+                if (path != null) {
+                  imageProvider = FileImage(File(path));
+                  selectedFile = result.files.first.xFile;
+                }
               }
               imagePath = null;
               setState(() {});
@@ -135,18 +143,21 @@ class _ImageSelectorDialogState extends State<ImageSelectorDialog> {
             ),
             padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
           ),
-          icon: const SvgIcon(XIcons.image),
-          label: const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text("Choose Image"),
+          icon: const SvgIcon(XIcons.image, invert: true),
+          label: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "Choose Image",
+              style: TextStyle(color: colorScheme.onPrimary),
+            ),
           ),
         ),
-        (_imageProvider != null)
+        (imageProvider != null)
             ? Container(
                 margin: const EdgeInsets.symmetric(vertical: 20),
                 decoration: BoxDecoration(border: Border.all(width: 0.2)),
                 height: 200,
-                child: Image(image: _imageProvider!),
+                child: Image(image: imageProvider!),
               )
             : const SizedBox(),
         const SizedBox(height: 40),
@@ -177,15 +188,21 @@ class _ImageSelectorDialogState extends State<ImageSelectorDialog> {
 
   Future<void> onSubmit(BuildContext context) async {
     setState(() => loading = true);
-    if (imagePath != null) {
-      if (imagePath!.isNotEmpty) {
-        widget.close(imagePath);
+    if (selectedFile != null) {
+      try {
+        var firestorage = FirebaseStorage.instance;
+        var ref = firestorage.ref(widget.uploadFolderPath);
+        await ref.putData(await selectedFile!.readAsBytes());
+        // ignore: use_build_context_synchronously
+        XFuns.showSnackbar(context, 'Image Uploaded!');
+        final url = await ref.getDownloadURL();
+        widget.close(url);
         return;
+      } catch (e) {
+        // ignore: use_build_context_synchronously
+        XFuns.showSnackbar(context, 'Error uploading image');
+        widget.close(null);
       }
-    }
-    if (_imageProvider != null) {
-      widget.close(null);
-      return;
     }
     setState(() => loading = false);
     return;

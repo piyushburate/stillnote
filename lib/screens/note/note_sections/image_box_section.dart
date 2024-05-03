@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,12 +20,13 @@ class ImageBoxSection extends NoteSection {
     required this.url,
   }) : super(type: NoteSectionType.imageBox);
 
-  Future<bool> getImageSelector(BuildContext context) async {
+  Future<void> getImageSelector(BuildContext context) async {
     String? result = await showDialog(
       context: context,
       useSafeArea: true,
       builder: (dialogContext) {
         return ImageSelectorDialog(
+          uploadFolderPath: '/notes/$noteId/$id/image.jpg',
           close: (String? url) => Navigator.pop(dialogContext, url),
         );
       },
@@ -38,9 +40,11 @@ class ImageBoxSection extends NoteSection {
           .update({'url': result});
       // ignore: use_build_context_synchronously
       await context.read<NoteCubit>().onNoteModified();
-      return true;
+      // ignore: use_build_context_synchronously
+      XFuns.showSnackbar(context, 'Image updated successfully!');
+      // ignore: use_build_context_synchronously
+      context.read<NoteCubit>().setAccess();
     }
-    return false;
   }
 
   @override
@@ -114,9 +118,7 @@ class ImageBoxSection extends NoteSection {
     if (state is NoteEditorState) {
       itemList.addAll([
         PopupMenuItem(
-          onTap: () {
-            imageSelector(context);
-          },
+          onTap: () => getImageSelector(context),
           child: const Row(
             children: [
               SvgIcon(XIcons.image),
@@ -134,7 +136,7 @@ class ImageBoxSection extends NoteSection {
             ],
           ),
           onTap: () async {
-            context.read<NoteCubit>().deleteNoteSection(state, id);
+            context.read<NoteCubit>().deleteNoteSection(state, this);
           },
         ),
       ]);
@@ -149,15 +151,11 @@ class ImageBoxSection extends NoteSection {
           );
   }
 
-  Future<void> imageSelector(BuildContext context) async {
-    await getImageSelector(context).then((value) {
-      if (value) {
-        XFuns.showSnackbar(context, 'Image updated successfully!');
-        context.read<NoteCubit>().setAccess();
-      }
-    });
+  @override
+  Future<void> deleteResources(NoteEditorState state) async {
+    await FirebaseStorage.instance.ref('/notes/$noteId/$id/image.jpg').delete();
   }
 
   @override
-  void initialAction(BuildContext context) => imageSelector(context);
+  void initialAction(BuildContext context) => getImageSelector(context);
 }

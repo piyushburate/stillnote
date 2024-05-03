@@ -120,6 +120,17 @@ class NotebookCubit extends Cubit<NotebookState> {
           .collection('notes')
           .doc(note.id)
           .delete();
+      await FirebaseFirestore.instance
+          .collection('notes')
+          .doc(note.id)
+          .collection('sections')
+          .get()
+          .then((snapshot) {
+        for (var doc in snapshot.docs) {
+          doc.reference.delete();
+        }
+      });
+
       await setAccess();
     }
   }

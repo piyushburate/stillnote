@@ -151,7 +151,7 @@ class YtVideoBoxSection extends NoteSection {
             ],
           ),
           onTap: () async {
-            context.read<NoteCubit>().deleteNoteSection(state, id);
+            context.read<NoteCubit>().deleteNoteSection(state, this);
           },
         ),
       ]);
