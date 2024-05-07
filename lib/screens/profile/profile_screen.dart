@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -23,11 +21,10 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  double? screenWidth;
+  late double screenWidth;
   late ColorScheme colorScheme;
   AuthUser? authUser;
   bool isloading = true;
-  late StreamSubscription _streamSubscriptionNotebooks;
   List<Notebook> notebooks = [];
 
   @override
@@ -38,16 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         isloading = false;
         authUser = value;
       });
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        fetchMyNotebooks();
-      });
     });
-  }
-
-  @override
-  void dispose() {
-    _streamSubscriptionNotebooks.cancel();
-    super.dispose();
   }
 
   @override
@@ -62,7 +50,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           title: const Text(XConsts.appName),
           actions: [
             XWidgets.profileBtn(context),
-            SizedBox(width: screenWidth! / 70),
+            SizedBox(width: screenWidth / 70),
           ],
           leading: XWidgets.backBtn(context),
         ),
@@ -70,70 +58,103 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ? const Center(child: CircularProgressIndicator())
             : (authUser == null)
                 ? const ErrorPage(errorMsg: 'User not found!')
-                : XFuns.isTabletScreen(screenWidth!)
-                    ? NotebooksGridview(
-                        list: notebooks,
-                        header: Material(
-                          clipBehavior: Clip.hardEdge,
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              width: 1,
-                              color: colorScheme.onSurface.withOpacity(0.5),
+                : XFuns.isTabletScreen(screenWidth)
+                    ? ListView(
+                        shrinkWrap: true,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                            child: Material(
+                              clipBehavior: Clip.hardEdge,
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                  width: 1,
+                                  color: colorScheme.onSurface.withOpacity(0.5),
+                                ),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: getProfileView(context, colorScheme),
                             ),
-                            borderRadius: BorderRadius.circular(5),
                           ),
-                          child: getProfileView(context, colorScheme),
-                        ),
+                          getNotebooksGridview(false),
+                        ],
                       )
                     : Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
                             constraints: BoxConstraints(
-                              maxWidth: XFuns.isTabletScreen(screenWidth!)
+                              maxWidth: XFuns.isTabletScreen(screenWidth)
                                   ? double.infinity
                                   : 340,
                               minHeight: 200,
                             ),
                             child: getProfileView(context, colorScheme),
                           ),
-                          Expanded(child: NotebooksGridview(list: notebooks)),
+                          Expanded(child: getNotebooksGridview(true)),
                         ],
                       ),
       ),
     );
   }
 
-  void fetchMyNotebooks() async {
-    final stream = FirebaseFirestore.instance
-        .collection('notebooks')
-        .where('owner_uid', isEqualTo: authUser!.uid)
-        .where('private', isEqualTo: false)
-        .snapshots();
-    _streamSubscriptionNotebooks = stream.listen((event) async {
-      final List<Notebook> result = [];
-      for (var doc in event.docs) {
-        if (doc.exists) {
-          final notesCount = await Notebook.getNotesCount(doc.id);
-          final notebook = Notebook.fromSnapshot(doc, notesCount);
-          result.add(notebook);
+  Widget getNotebooksGridview(bool scrollable) {
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      stream: getNotebooksStream(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return NotebooksGridview(list: notebooks);
         }
+        notebooks = getMyNotebooks(snapshot.data!);
+        return NotebooksGridview(
+          list: notebooks,
+          scrollable: scrollable,
+        );
+      },
+    );
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getNotebooksStream() {
+    if (XFuns.isAuthenticated(context)) {
+      if (FirebaseAuth.instance.currentUser!.uid == authUser!.uid) {
+        return FirebaseFirestore.instance
+            .collection('notebooks')
+            .where('owner_uid', isEqualTo: authUser!.uid)
+            .snapshots();
       }
-      setState(() {
-        notebooks = result;
-      });
-    });
+    }
+    return FirebaseFirestore.instance
+        .collection('notebooks')
+        .where(
+          Filter.and(
+            Filter('owner_uid', isEqualTo: authUser!.uid),
+            Filter('private', isEqualTo: false),
+          ),
+        )
+        .snapshots();
+  }
+
+  List<Notebook> getMyNotebooks(QuerySnapshot<Map<String, dynamic>> data) {
+    final List<Notebook> result = [];
+    for (var doc in data.docs) {
+      result.add(Notebook.fromSnapshot(doc));
+    }
+    result.sort(
+      (a, b) {
+        return (b.createdDatetime.compareTo(a.createdDatetime));
+      },
+    );
+    return result;
   }
 
   Widget getProfileView(BuildContext context, ColorScheme colorScheme) {
     return Container(
       color: colorScheme.surface,
       alignment: Alignment.topLeft,
-      padding: const EdgeInsets.fromLTRB(25, 30, 25, 20),
+      padding: const EdgeInsets.fromLTRB(25, 10, 25, 10),
       child: Flex(
-        direction: XFuns.isTabletScreen(screenWidth!)
-            ? Axis.horizontal
-            : Axis.vertical,
+        direction:
+            XFuns.isTabletScreen(screenWidth) ? Axis.horizontal : Axis.vertical,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
@@ -150,7 +171,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Image.asset(
               XConsts.onErrorImageAsset,
               fit: BoxFit.cover,
-              width: screenWidth! / 4,
+              width: screenWidth / 4,
               height: 180,
             ),
           ),
@@ -158,7 +179,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: XFuns.isTabletScreen(screenWidth!)
+              mainAxisAlignment: XFuns.isTabletScreen(screenWidth)
                   ? MainAxisAlignment.center
                   : MainAxisAlignment.start,
               children: [

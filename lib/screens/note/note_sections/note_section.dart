@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:stillnote/screens/note/cubit/note_cubit.dart';
+import 'package:stillnote/screens/note/note_sections/code_view_box_section.dart';
 import 'package:stillnote/screens/note/note_sections/image_box_section.dart';
 import 'package:stillnote/screens/note/note_sections/note_section_type.dart';
 import 'package:stillnote/screens/note/note_sections/text_box_section.dart';
@@ -29,6 +30,9 @@ class NoteSection {
     }
     if (type == NoteSectionType.ytVideoBox.name) {
       return YtVideoBoxSection.fromSnapshot(document, noteId);
+    }
+    if (type == NoteSectionType.codeViewBox.name) {
+      return CodeViewBoxSection.fromSnapshot(document, noteId);
     }
     return null;
   }

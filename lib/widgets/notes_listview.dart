@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:stillnote/dialogs/create_note_dialog.dart';
 import 'package:stillnote/models/note.dart';
 import 'package:stillnote/models/notebook.dart';
 import 'package:stillnote/screens/notebook/cubit/notebook_cubit.dart';
 
-class NotesListview extends StatefulWidget {
-  final bool showActions;
-  final bool showCreateBtn;
-  final Notebook? notebook;
+class NotesListview extends StatelessWidget {
   final List<Note> list;
-  final Future<void> Function()? refreshFun;
+  final Notebook? notebook;
   final NotebookEditorState? notebookState;
   final String? title;
   final bool scrollable;
@@ -18,99 +14,61 @@ class NotesListview extends StatefulWidget {
     super.key,
     required this.list,
     this.notebook,
-    this.refreshFun,
-    this.showCreateBtn = false,
-    this.showActions = false,
     this.notebookState,
     this.title,
     this.scrollable = true,
   });
 
   @override
-  State<NotesListview> createState() => _NotesListviewState();
-}
-
-class _NotesListviewState extends State<NotesListview> {
-  late ColorScheme colorScheme;
-
-  @override
   Widget build(BuildContext context) {
-    colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
-    return Scaffold(
-      floatingActionButton: (widget.showCreateBtn && widget.notebook != null)
-          ? FloatingActionButton.extended(
-              onPressed: () async {
-                String? noteId = await showDialog(
-                  context: context,
-                  useSafeArea: true,
-                  builder: (dialogContext) {
-                    return CreateNoteDialog(
-                      close: (noteId) => Navigator.pop(dialogContext, noteId),
-                      notebook: widget.notebook!,
-                    );
-                  },
-                );
-                // ignore: use_build_context_synchronously
-                await widget.refreshFun!();
-                if (noteId != null && noteId.isNotEmpty) {
-                  // ignore: use_build_context_synchronously
-                  context.push('/note/$noteId');
-                }
-              },
-              label: const Text('New Note'),
-              icon: const Icon(Icons.add),
-            )
-          : null,
-      body: (widget.refreshFun == null)
-          ? getMainView()
-          : RefreshIndicator(
-              onRefresh: () => widget.refreshFun!(),
-              triggerMode: RefreshIndicatorTriggerMode.anywhere,
-              child: getMainView(),
-            ),
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: scrollable
+          ? const AlwaysScrollableScrollPhysics()
+          : const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+      itemCount: list.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 5),
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildHeader(colorScheme),
+              _buildNoteItem(context, colorScheme, list[index])
+            ],
+          );
+        }
+        return _buildNoteItem(context, colorScheme, list[index]);
+      },
     );
   }
 
-  Widget getMainView() {
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
-      physics: widget.scrollable
-          ? const AlwaysScrollableScrollPhysics()
-          : const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
+  Widget _buildHeader(ColorScheme colorScheme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        if (widget.title != null)
-          Text(
-            widget.title!,
-            style: TextStyle(
-              fontSize: 16,
-              color: colorScheme.onSurface.withOpacity(0.6),
+        if (title != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 5),
+            child: Text(
+              title!,
+              style: TextStyle(
+                fontSize: 16,
+                color: colorScheme.onSurface.withOpacity(0.6),
+              ),
             ),
           ),
-        if (widget.showActions) _buildActions(),
-        if (widget.showActions) const SizedBox(height: 10),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: widget.list.length,
-          itemBuilder: (context, index) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            child: _buildNoteItem(widget.list[index]),
-          ),
-        ),
       ],
     );
   }
 
-  Widget _buildActions() {
-    return const Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [],
-    );
-  }
-
-  Widget _buildNoteItem(Note note) {
+  Widget _buildNoteItem(
+      BuildContext context, ColorScheme colorScheme, Note note) {
     return Material(
       type: MaterialType.transparency,
       child: ListTile(
@@ -129,7 +87,7 @@ class _NotesListviewState extends State<NotesListview> {
         ),
         tileColor: colorScheme.surface,
         onTap: () => context.push('/note/${note.id}'),
-        trailing: note.menu(context, notebookState: widget.notebookState),
+        trailing: note.menu(context, notebookState: notebookState),
       ),
     );
   }

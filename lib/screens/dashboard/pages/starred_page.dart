@@ -16,32 +16,12 @@ class StarredPage extends StatefulWidget {
 }
 
 class _StarredPageState extends State<StarredPage> {
-  ColorScheme? colorScheme;
-  double? screenWidth;
-  late StreamSubscription _streamSubscriptionNotebooks;
-  late StreamSubscription _streamSubscriptionNotes;
   List<Notebook> notebooks = [];
   List<Note> notes = [];
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      fetchStarredNotebooks();
-      fetchStarredNotes();
-    });
-  }
-
-  @override
-  void dispose() {
-    _streamSubscriptionNotebooks.cancel();
-    _streamSubscriptionNotes.cancel();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
     return DefaultTabController(
       length: 2,
       initialIndex: 0,
@@ -49,11 +29,11 @@ class _StarredPageState extends State<StarredPage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Material(
-            color: colorScheme!.surface,
+            color: colorScheme.surface,
             child: TabBar(
-              indicatorColor: colorScheme!.primary,
-              labelColor: colorScheme!.primary,
-              unselectedLabelColor: colorScheme!.primary.withOpacity(0.5),
+              indicatorColor: colorScheme.primary,
+              labelColor: colorScheme.primary,
+              unselectedLabelColor: colorScheme.primary.withOpacity(0.5),
               tabAlignment: TabAlignment.start,
               isScrollable: true,
               tabs: const [
@@ -65,8 +45,50 @@ class _StarredPageState extends State<StarredPage> {
           Expanded(
             child: TabBarView(
               children: [
-                NotebooksGridview(list: notebooks),
-                NotesListview(list: notes),
+                StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                  stream: FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(FirebaseAuth.instance.currentUser!.uid)
+                      .collection('starred')
+                      .where('type', isEqualTo: 'notebook')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return NotebooksGridview(list: notebooks);
+                    }
+                    return FutureBuilder<List<Notebook>>(
+                      future: fetchStarredNotebooks(snapshot.data!),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          notebooks = snapshot.data!;
+                        }
+                        return NotebooksGridview(list: notebooks);
+                      },
+                    );
+                  },
+                ),
+                StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                  stream: FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(FirebaseAuth.instance.currentUser!.uid)
+                      .collection('starred')
+                      .where('type', isEqualTo: 'note')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return NotesListview(list: notes);
+                    }
+                    return FutureBuilder<List<Note>>(
+                      future: fetchStarredNotes(snapshot.data!),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          notes = snapshot.data!;
+                        }
+                        return NotesListview(list: notes);
+                      },
+                    );
+                  },
+                ),
               ],
             ),
           ),
@@ -75,49 +97,29 @@ class _StarredPageState extends State<StarredPage> {
     );
   }
 
-  void fetchStarredNotebooks() async {
-    final stream = FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection('starred')
-        .where('type', isEqualTo: 'notebook')
-        .snapshots();
-    _streamSubscriptionNotebooks = stream.listen((event) async {
-      final List<Notebook> result = [];
-      for (var doc in event.docs) {
-        if (doc.exists) {
-          final notebook = await Notebook.fromId(doc['id']);
-          if (notebook != null) {
-            result.add(notebook);
-          }
-        }
+  Future<List<Notebook>> fetchStarredNotebooks(
+      QuerySnapshot<Map<String, dynamic>> data) async {
+    final List<Notebook> result = [];
+    for (var doc in data.docs) {
+      final notebook = await Notebook.fromId(doc['id']);
+      if (notebook != null) {
+        result.add(notebook);
       }
-      setState(() {
-        notebooks = result;
-      });
-    });
+    }
+    return result;
   }
 
-  void fetchStarredNotes() async {
-    final stream = FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection('starred')
-        .where('type', isEqualTo: 'note')
-        .snapshots();
-    _streamSubscriptionNotes = stream.listen((event) async {
-      final List<Note> result = [];
-      for (var doc in event.docs) {
-        if (doc.exists) {
-          final note = await Note.fromId(doc['id']);
-          if (note != null) {
-            result.add(note);
-          }
+  Future<List<Note>> fetchStarredNotes(
+      QuerySnapshot<Map<String, dynamic>> data) async {
+    final List<Note> result = [];
+    for (var doc in data.docs) {
+      if (doc.exists) {
+        final note = await Note.fromId(doc['id']);
+        if (note != null) {
+          result.add(note);
         }
       }
-      setState(() {
-        notes = result;
-      });
-    });
+    }
+    return result;
   }
 }

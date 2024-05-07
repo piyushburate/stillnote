@@ -8,7 +8,6 @@ import 'package:stillnote/widgets/svg_icon.dart';
 
 class Notebook {
   final String id;
-  final int notesCount;
   final Timestamp createdDatetime;
   final String ownerUID;
   String title;
@@ -24,11 +23,10 @@ class Notebook {
     required this.modifiedDatetime,
     required this.ownerUID,
     required this.private,
-    required this.notesCount,
   });
 
   factory Notebook.fromSnapshot(
-      DocumentSnapshot<Map<String, dynamic>> document, int? notesCount) {
+      DocumentSnapshot<Map<String, dynamic>> document) {
     final data = document.data()!;
     return Notebook(
       id: document.id,
@@ -38,17 +36,17 @@ class Notebook {
       modifiedDatetime: data['modified_datetime'],
       ownerUID: data['owner_uid'],
       private: data['private'],
-      notesCount: notesCount ?? 0,
     );
   }
 
-  static Future<int?> getNotesCount(String notebookId) async {
+  Future<int> getNotesCount() async {
     return (await FirebaseFirestore.instance
-            .collection('notes')
-            .where('notebook_id', isEqualTo: notebookId)
-            .count()
-            .get())
-        .count;
+                .collection('notes')
+                .where('notebook_id', isEqualTo: id)
+                .count()
+                .get())
+            .count ??
+        0;
   }
 
   static Future<Notebook?> fromId(String id) async {
@@ -57,7 +55,7 @@ class Notebook {
     if (!ref.exists) {
       return null;
     }
-    return Notebook.fromSnapshot(ref, await getNotesCount(id));
+    return Notebook.fromSnapshot(ref);
   }
 
   static Future<Notebook?> createNewNotebook({
@@ -78,7 +76,21 @@ class Notebook {
     });
     final doc = await ref.get();
     if (doc.exists) {
-      return Notebook.fromSnapshot(doc, await getNotesCount(doc.id));
+      return Notebook.fromSnapshot(doc);
+    }
+    return null;
+  }
+
+  Future<String?> getStarredId() async {
+    final docs = (await FirebaseFirestore.instance
+            .collection(
+                'users/${FirebaseAuth.instance.currentUser!.uid}/starred')
+            .where('type', isEqualTo: 'notebook')
+            .where('id', isEqualTo: id)
+            .get())
+        .docs;
+    if (docs.isNotEmpty) {
+      return docs.first.id;
     }
     return null;
   }
@@ -102,6 +114,36 @@ class Notebook {
             onTap: () =>
                 XFuns.shareLink(context, '${XConsts.appDomain}/notebook/$id'),
           ),
+          if (XFuns.isAuthenticated(context))
+            PopupMenuItem(
+              child: Row(
+                children: [
+                  const SvgIcon(XIcons.star, width: 20),
+                  const SizedBox(width: 10),
+                  FutureBuilder<String?>(
+                    future: getStarredId(),
+                    builder: (context, snapshot) {
+                      return Text((snapshot.data != null) ? 'Unstar' : 'Star');
+                    },
+                  ),
+                ],
+              ),
+              onTap: () async {
+                final starredId = await getStarredId();
+                if (starredId != null) {
+                  FirebaseFirestore.instance
+                      .collection(
+                          'users/${FirebaseAuth.instance.currentUser!.uid}/starred')
+                      .doc(starredId)
+                      .delete();
+                } else {
+                  FirebaseFirestore.instance
+                      .collection(
+                          'users/${FirebaseAuth.instance.currentUser!.uid}/starred')
+                      .add({'type': 'notebook', 'id': id});
+                }
+              },
+            ),
           if (editable)
             PopupMenuItem(
               child: const Row(

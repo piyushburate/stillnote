@@ -8,25 +8,19 @@ class NotebookInitialState extends NotebookState {}
 
 class NotebookAccessState extends NotebookState {
   Notebook notebook;
-  List<Note> noteList;
+  List<Note>? noteList;
 
-  NotebookAccessState({
-    required this.notebook,
-    required this.noteList,
-  }) : super();
+  NotebookAccessState({required this.notebook}) : super();
 }
 
 class NotebookReadOnlyState extends NotebookAccessState {
-  NotebookReadOnlyState({
-    required super.notebook,
-    required super.noteList,
-  });
+  NotebookReadOnlyState({required super.notebook});
 }
 
 class NotebookEditorState extends NotebookAccessState {
   NotebookEditorState({
     required super.notebook,
-    required super.noteList,
+    // required super.noteList,
   });
 }
 

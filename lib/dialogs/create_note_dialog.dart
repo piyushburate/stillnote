@@ -6,7 +6,7 @@ import 'package:stillnote/utils/x_widgets.dart';
 
 class CreateNoteDialog extends StatefulWidget {
   final Notebook notebook;
-  final void Function(String? noteId) close;
+  final void Function(Note? noteId) close;
   const CreateNoteDialog({
     super.key,
     required this.close,
@@ -152,7 +152,7 @@ class _CreateNoteDialogState extends State<CreateNoteDialog> {
           XFuns.showSnackbar(context, 'Failed to create note');
           widget.close(null);
         } else {
-          widget.close(result.id);
+          widget.close(result);
         }
         return;
       }

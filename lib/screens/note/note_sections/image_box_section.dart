@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stillnote/dialogs/image_selector_dialog.dart';
 import 'package:stillnote/screens/note/cubit/note_cubit.dart';
@@ -110,7 +109,7 @@ class ImageBoxSection extends NoteSection {
           ],
         ),
         onTap: () {
-          Clipboard.setData(ClipboardData(text: url));
+          XFuns.copyText(url);
           XFuns.showSnackbar(context, 'Image URL copied successfully!');
         },
       ),

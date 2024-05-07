@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:stillnote/screens/note/note_sections/note_section_type.dart';
+import 'package:stillnote/screens/note/note_sections/code_view_box_section.dart';
 import 'package:stillnote/utils/x_icons.dart';
 import 'package:stillnote/widgets/svg_icon.dart';
 
-class AddNoteSectionDialog extends StatefulWidget {
-  final void Function(NoteSectionType? noteSectionType) close;
-  const AddNoteSectionDialog({
+class ChooseCodeViewLanguageDialog extends StatefulWidget {
+  final void Function(CodeViewLanguage? codeViewLanguage) close;
+  const ChooseCodeViewLanguageDialog({
     super.key,
     required this.close,
   });
 
   @override
-  State<AddNoteSectionDialog> createState() => _AddNoteSectionDialogState();
+  State<ChooseCodeViewLanguageDialog> createState() =>
+      _ChooseCodeViewLanguageDialogState();
 }
 
-class _AddNoteSectionDialogState extends State<AddNoteSectionDialog> {
+class _ChooseCodeViewLanguageDialogState
+    extends State<ChooseCodeViewLanguageDialog> {
   final _searchCtrl = TextEditingController();
   String searchText = '';
-  final sectionList = NoteSectionType.values;
-  // int selectedIndex = 0;
+  final codeViewLangs = CodeViewLanguage.values;
 
   @override
   void initState() {
@@ -57,7 +58,7 @@ class _AddNoteSectionDialogState extends State<AddNoteSectionDialog> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Add Section',
+                'Change Code Language',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -85,7 +86,6 @@ class _AddNoteSectionDialogState extends State<AddNoteSectionDialog> {
                   searchText = value.toLowerCase();
                 });
               },
-              textInputAction: TextInputAction.search,
               decoration: getSearchTextFieldDecoration(),
             ),
           ),
@@ -93,10 +93,10 @@ class _AddNoteSectionDialogState extends State<AddNoteSectionDialog> {
           Flexible(
             child: ListView.separated(
               shrinkWrap: true,
-              itemCount: sectionList.length,
+              itemCount: codeViewLangs.length,
               separatorBuilder: (context, index) {
                 if (searchText.isNotEmpty &&
-                    !sectionList[index]
+                    !codeViewLangs[index]
                         .title
                         .toLowerCase()
                         .contains(searchText)) {
@@ -106,7 +106,7 @@ class _AddNoteSectionDialogState extends State<AddNoteSectionDialog> {
               },
               itemBuilder: (context, index) {
                 if (searchText.isNotEmpty &&
-                    !sectionList[index]
+                    !codeViewLangs[index]
                         .title
                         .toLowerCase()
                         .contains(searchText)) {
@@ -119,14 +119,8 @@ class _AddNoteSectionDialogState extends State<AddNoteSectionDialog> {
                   child: ListTile(
                     tileColor: colorScheme.surface,
                     contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-                    leading: sectionList[index].icon,
-                    trailing: IconButton(
-                      onPressed: () {
-                        widget.close(sectionList[index]);
-                      },
-                      icon: const Icon(Icons.add),
-                    ),
-                    title: Text(sectionList[index].title),
+                    onTap: () => widget.close(codeViewLangs[index]),
+                    title: Text(codeViewLangs[index].title),
                   ),
                 );
               },

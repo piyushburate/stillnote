@@ -71,7 +71,7 @@ class XWidgets {
     required ColorScheme colorScheme,
     required bool value,
     required String text,
-    required void Function(bool)? onChanged,
+    required void Function(bool value)? onChanged,
   }) {
     return SwitchListTile.adaptive(
       contentPadding: EdgeInsets.zero,
@@ -133,7 +133,7 @@ class XWidgets {
           return XWidgets.svgIconTextBtn(
             colorScheme: colorScheme,
             assetName: XIcons.star,
-            text: isStarred ? 'Starred' : 'Star',
+            text: isStarred ? 'Unstar' : 'Star',
             onPressed: () {
               if (isStarred) {
                 FirebaseFirestore.instance

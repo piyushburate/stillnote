@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stillnote/dialogs/ytvideo_url_get_dialog.dart';
 import 'package:stillnote/screens/note/cubit/note_cubit.dart';
@@ -125,7 +124,7 @@ class YtVideoBoxSection extends NoteSection {
           ],
         ),
         onTap: () {
-          Clipboard.setData(ClipboardData(text: url));
+          XFuns.copyText(url);
           XFuns.showSnackbar(context, 'Youtube Video URL copied successfully!');
         },
       ),

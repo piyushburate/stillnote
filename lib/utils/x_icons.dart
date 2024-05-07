@@ -29,4 +29,5 @@ class XIcons {
   static const notes = 'assets/icons/notes.svg';
   static const chat = 'assets/icons/message_text.svg';
   static const dashboard = 'assets/icons/dashboard_dots.svg';
+  static const code = 'assets/icons/code_brackets_square.svg';
 }

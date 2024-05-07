@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stillnote/models/safe_timer.dart';
 import 'package:stillnote/screens/note/cubit/note_cubit.dart';
@@ -12,7 +11,7 @@ import 'package:stillnote/widgets/svg_icon.dart';
 
 class TextBoxSection extends NoteSection {
   final TextEditingController _controller = TextEditingController();
-  final SafeTimer _timer = SafeTimer(const Duration(seconds: 3));
+  final SafeTimer _timer = SafeTimer(const Duration(seconds: 1));
   TextBoxSection({
     required super.id,
     required super.noteId,
@@ -49,8 +48,6 @@ class TextBoxSection extends NoteSection {
               .update({'text': value});
           // ignore: use_build_context_synchronously
           context.read<NoteCubit>().onNoteModified();
-          // ignore: use_build_context_synchronously
-          XFuns.showSnackbar(context, "Saved");
         });
       },
       maxLines: null,
@@ -86,7 +83,7 @@ class TextBoxSection extends NoteSection {
           ],
         ),
         onTap: () {
-          Clipboard.setData(ClipboardData(text: text));
+          XFuns.copyText(text);
           XFuns.showSnackbar(context, 'TextBox text copied successfully!');
         },
       ),

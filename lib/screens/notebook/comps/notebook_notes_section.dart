@@ -1,63 +1,65 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:stillnote/dialogs/create_note_dialog.dart';
+import 'package:stillnote/models/note.dart';
 import 'package:stillnote/screens/notebook/cubit/notebook_cubit.dart';
 import 'package:stillnote/widgets/notes_listview.dart';
 
-class NotebookNotesSection extends StatefulWidget {
+class NotebookNotesSection extends StatelessWidget {
   final NotebookAccessState notebookState;
   const NotebookNotesSection(this.notebookState, {super.key});
 
   @override
-  State<NotebookNotesSection> createState() => _NotebookNotesSectionState();
-}
-
-class _NotebookNotesSectionState extends State<NotebookNotesSection> {
-  ColorScheme? colorScheme;
-
-  @override
   Widget build(BuildContext context) {
-    colorScheme = Theme.of(context).colorScheme;
-    // return DefaultTabController(
-    //   length: 4,
-    //   initialIndex: 0,
-    //   child: Scaffold(
-    //     appBar: AppBar(
-    //       title: const Text('Notes'),
-    //       automaticallyImplyLeading: false,
-    //       bottom: TabBar(
-    //         indicatorColor: colorScheme!.primary,
-    //         labelColor: colorScheme!.primary,
-    //         unselectedLabelColor: colorScheme!.primary.withOpacity(0.5),
-    //         tabAlignment: TabAlignment.start,
-    //         isScrollable: true,
-    //         tabs: const [
-    //           Tab(text: 'All'),
-    //           Tab(text: 'Unit 1'),
-    //           Tab(text: 'Unit 2'),
-    //           Tab(text: 'Unit 3'),
-    //         ],
-    //       ),
-    //     ),
-    //     body: TabBarView(
-    //       children: [
-
-    //         Container(),
-    //         Container(),
-    //         Container(),
-    //       ],
-    //     ),
-    //   ),
-    // );
-    return NotesListview(
-      title: 'Notes',
-      list: widget.notebookState.noteList,
-      showCreateBtn: true,
-      notebook: widget.notebookState.notebook,
-      showActions: true,
-      notebookState: (widget.notebookState is NotebookEditorState)
-          ? (widget.notebookState as NotebookEditorState)
-          : null,
-      refreshFun: () => context.read<NotebookCubit>().setAccess(),
+    return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async {
+          Note? note = await showDialog(
+            context: context,
+            useSafeArea: true,
+            builder: (dialogContext) {
+              return CreateNoteDialog(
+                close: (noteId) => Navigator.pop(dialogContext, noteId),
+                notebook: notebookState.notebook,
+              );
+            },
+          );
+          if (note != null) {
+            // ignore: use_build_context_synchronously
+            await context.read<NotebookCubit>().onNotebookModified();
+            // ignore: use_build_context_synchronously
+            await context.read<NotebookCubit>().setAccess();
+            // ignore: use_build_context_synchronously
+            context.push('/note/${note.id}');
+          }
+        },
+        label: const Text('New Note'),
+        icon: const Icon(Icons.add),
+      ),
+      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          stream: FirebaseFirestore.instance
+              .collection("notes")
+              .where("notebook_id", isEqualTo: notebookState.notebook.id)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              notebookState.noteList =
+                  context.read<NotebookCubit>().getNotes(snapshot.data!);
+            }
+            if (notebookState.noteList == null) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            return NotesListview(
+              title: 'Notes',
+              list: notebookState.noteList!,
+              notebook: notebookState.notebook,
+              notebookState: (notebookState is NotebookEditorState)
+                  ? (notebookState as NotebookEditorState)
+                  : null,
+            );
+          }),
     );
   }
 }

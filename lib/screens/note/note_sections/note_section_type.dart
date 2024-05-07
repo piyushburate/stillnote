@@ -33,6 +33,16 @@ enum NoteSectionType {
     data: {'url': ''},
     isContainer: false,
   ),
+  codeViewBox(
+    title: "Code View Box",
+    description: "Shows code in proper formatting.",
+    icon: SvgIcon(
+      XIcons.code,
+      width: 20,
+    ),
+    data: {'code': '', 'lang': 'java'},
+    isContainer: false,
+  ),
   ;
 
   final String title;

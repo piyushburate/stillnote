@@ -64,9 +64,6 @@ class _SearchPageState extends State<SearchPage> {
                 child: SvgIcon(XIcons.search),
               ),
             ),
-            onChanged: (value) {
-              // Perform search functionality here
-            },
           ),
           bottom: TabBar(
             indicatorColor: colorScheme.primary,
@@ -109,8 +106,7 @@ class _SearchPageState extends State<SearchPage> {
       for (var doc in docs) {
         if (doc.exists) {
           if (doc['title'].toString().toLowerCase().contains(value)) {
-            final notesCount = (await Notebook.getNotesCount(doc.id)) ?? 0;
-            result.add(Notebook.fromSnapshot(doc, notesCount));
+            result.add(Notebook.fromSnapshot(doc));
           }
         }
       }

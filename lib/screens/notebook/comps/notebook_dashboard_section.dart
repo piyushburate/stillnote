@@ -87,8 +87,8 @@ class NotebookDashboardSection extends StatelessWidget {
                   colorScheme: colorScheme,
                   assetName: XIcons.pencil,
                   text: 'Edit',
-                  onPressed: () async {
-                    await showTitleDescUpdateDialog(
+                  onPressed: () {
+                    showTitleDescUpdateDialog(
                       context,
                       (notebookState as NotebookEditorState),
                     );
@@ -128,16 +128,16 @@ class NotebookDashboardSection extends StatelessWidget {
             style: const TextStyle(
               fontSize: 14,
             ),
-            textAlign: TextAlign.justify,
+            textAlign: TextAlign.left,
           ),
         ],
       ),
     );
   }
 
-  Future<bool> showTitleDescUpdateDialog(
-      BuildContext context, NotebookEditorState state) async {
-    return await showDialog(
+  void showTitleDescUpdateDialog(
+      BuildContext context, NotebookEditorState state) {
+    showDialog(
       context: context,
       builder: (dialogContext) => NotebookSettingsDialog(
         state: state,

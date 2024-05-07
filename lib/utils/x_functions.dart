@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stillnote/utils/x_constants.dart';
 import 'package:share_plus_dialog/share_plus_dialog.dart';
@@ -46,6 +47,9 @@ class XFuns {
       platforms: SharePlatform.defaults,
     );
   }
+
+  static void copyText(String text) =>
+      Clipboard.setData(ClipboardData(text: text));
 
   static Future<void> bucketAddNotebookToRecent(String nid) async {
     final SharedPreferences bucket = await SharedPreferences.getInstance();

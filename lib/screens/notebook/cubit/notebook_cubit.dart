@@ -11,10 +11,7 @@ part 'notebook_state.dart';
 class NotebookCubit extends Cubit<NotebookState> {
   String notebookId;
 
-  NotebookCubit(
-    this.notebookId,
-    // this.createdDatetime,
-  ) : super(NotebookInitialState()) {
+  NotebookCubit(this.notebookId) : super(NotebookInitialState()) {
     setAccess();
   }
 
@@ -23,12 +20,12 @@ class NotebookCubit extends Cubit<NotebookState> {
       final auth = FirebaseAuth.instance;
       final notebook = await Notebook.fromId(notebookId);
       if (notebook != null) {
-        List<Note> noteList = await getNotes();
+        // List<Note> noteList = await getNotes();
         if (auth.currentUser != null) {
           if (notebook.ownerUID == auth.currentUser!.uid) {
             emit(NotebookEditorState(
               notebook: notebook,
-              noteList: noteList,
+              // noteList: noteList,
             ));
             return;
           }
@@ -41,7 +38,7 @@ class NotebookCubit extends Cubit<NotebookState> {
         }
         emit(NotebookReadOnlyState(
           notebook: notebook,
-          noteList: noteList,
+          // noteList: noteList,
         ));
       } else {
         emit(const NotebookErrorState('Notebook not found!'));
@@ -51,20 +48,13 @@ class NotebookCubit extends Cubit<NotebookState> {
     }
   }
 
-  Future<List<Note>> getNotes() async {
-    final firestore = FirebaseFirestore.instance;
+  List<Note> getNotes(QuerySnapshot<Map<String, dynamic>> snapshot) {
     List<Note> result = [];
-    await firestore
-        .collection("notes")
-        .where("notebook_id", isEqualTo: notebookId)
-        .get()
-        .then((snapshot) {
-      for (var doc in snapshot.docs) {
-        if (doc.exists) {
-          result.add(Note.fromSnapshot(doc));
-        }
+    for (var doc in snapshot.docs) {
+      if (doc.exists) {
+        result.add(Note.fromSnapshot(doc));
       }
-    });
+    }
 
     result.sort(
       (a, b) {
@@ -104,7 +94,7 @@ class NotebookCubit extends Cubit<NotebookState> {
       state.notebook.description = newDesc;
       emit(NotebookEditorState(
         notebook: state.notebook,
-        noteList: state.noteList,
+        // noteList: state.noteList,
       ));
       // ignore: use_build_context_synchronously
       XFuns.showSnackbar(context, "Changes Applied Successfully!");
@@ -115,23 +105,28 @@ class NotebookCubit extends Cubit<NotebookState> {
   }
 
   Future<void> deleteNote(NotebookEditorState state, Note note) async {
-    if (state.noteList.contains(note)) {
-      await FirebaseFirestore.instance
-          .collection('notes')
-          .doc(note.id)
-          .delete();
-      await FirebaseFirestore.instance
-          .collection('notes')
-          .doc(note.id)
-          .collection('sections')
-          .get()
-          .then((snapshot) {
-        for (var doc in snapshot.docs) {
-          doc.reference.delete();
-        }
-      });
-
-      await setAccess();
-    }
+    await FirebaseFirestore.instance.collection('notes').doc(note.id).delete();
+    await FirebaseFirestore.instance
+        .collection('notes')
+        .doc(note.id)
+        .collection('sections')
+        .get()
+        .then((snapshot) {
+      for (var doc in snapshot.docs) {
+        doc.reference.delete();
+      }
+    });
+    await FirebaseFirestore.instance
+        .collection('notes')
+        .doc(note.id)
+        .collection('discuss')
+        .get()
+        .then((snapshot) {
+      for (var doc in snapshot.docs) {
+        doc.reference.delete();
+      }
+    });
+    await onNotebookModified();
+    await setAccess();
   }
 }

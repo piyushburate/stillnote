@@ -18,7 +18,7 @@ part 'note_state.dart';
 class NoteCubit extends Cubit<NoteState> {
   final String noteId;
   final ItemScrollController noteViewItemScroller = ItemScrollController();
-  final SafeTimer _titleUpdaterTimer = SafeTimer(const Duration(seconds: 3));
+  final SafeTimer _titleUpdaterTimer = SafeTimer(const Duration(seconds: 1));
   NoteCubit(this.noteId) : super(NoteInitialState()) {
     setAccess();
   }
@@ -216,10 +216,10 @@ class NoteCubit extends Cubit<NoteState> {
           .collection("notes")
           .doc(noteState.note.id)
           .update({'modified_datetime': modifiedTimestamp});
-      await firestore
-          .collection("notebooks")
-          .doc(noteState.note.notebookId)
-          .update({'modified_datetime': modifiedTimestamp});
+      // await firestore
+      //     .collection("notebooks")
+      //     .doc(noteState.note.notebookId)
+      //     .update({'modified_datetime': modifiedTimestamp});
     }
     return;
   }
