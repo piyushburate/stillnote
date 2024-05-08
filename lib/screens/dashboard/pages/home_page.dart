@@ -1,11 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_quill/flutter_quill.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stillnote/models/notebook.dart';
 import 'package:stillnote/utils/x_constants.dart';
-import 'package:stillnote/utils/x_functions.dart';
 import 'package:stillnote/widgets/notebooks_gridview.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,17 +12,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final QuillController _controller = QuillController.basic();
   late ColorScheme colorScheme;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.changes.listen((event) {
-      final json = jsonEncode(_controller.document.toDelta().toJson());
-      XFuns.bucketSetScratchpad(json);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

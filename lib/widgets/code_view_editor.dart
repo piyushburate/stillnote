@@ -1,11 +1,12 @@
+import 'package:code_text_field/code_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_code_editor/flutter_code_editor.dart';
-import 'package:flutter_highlight/themes/github.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:stillnote/screens/note/note_sections/code_view_box_section.dart';
+import 'package:stillnote/models/code_view_language.dart';
 import 'package:stillnote/utils/x_functions.dart';
 import 'package:stillnote/utils/x_icons.dart';
 import 'package:stillnote/widgets/svg_icon.dart';
+import 'package:flutter_highlight/themes/github.dart';
+import 'package:flutter_highlight/themes/dark.dart';
 
 class CodeViewEditor extends StatelessWidget {
   final String initialCode;
@@ -28,7 +29,7 @@ class CodeViewEditor extends StatelessWidget {
     return Material(
       clipBehavior: Clip.hardEdge,
       borderRadius: BorderRadius.circular(5),
-      color: colorScheme.secondary,
+      color: colorScheme.onBackground,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -45,36 +46,37 @@ class CodeViewEditor extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                InkWell(
-                  onTap: () {
-                    XFuns.copyText(controller.text);
-                    XFuns.showSnackbar(context, 'Code Copied!');
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: colorScheme.surface,
-                      borderRadius: BorderRadius.circular(3),
+                Tooltip(
+                  message: 'Copy Code',
+                  child: InkWell(
+                    onTap: () {
+                      XFuns.copyText(controller.text);
+                      XFuns.showSnackbar(context, 'Code Copied!');
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: colorScheme.surface,
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                      padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
+                      child: const SvgIcon(XIcons.copy, width: 20),
                     ),
-                    padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
-                    child: const SvgIcon(XIcons.copy, width: 20),
                   ),
                 ),
               ],
             ),
           ),
           CodeTheme(
-            data: CodeThemeData(styles: githubTheme),
+            data: CodeThemeData(
+              styles: XFuns.isDarkMode(context) ? darkTheme : githubTheme,
+            ),
             child: CodeField(
-              background: colorScheme.background,
-              padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
               controller: controller,
               readOnly: !editable,
               onChanged: onChanged,
+              background: colorScheme.background,
               textStyle: TextStyle(
-                  fontFamily: GoogleFonts.getFont('Anonymous Pro').fontFamily),
-              gutterStyle: const GutterStyle(
-                showErrors: false,
-                showFoldingHandles: false,
+                fontFamily: GoogleFonts.getFont('Anonymous Pro').fontFamily,
               ),
             ),
           ),

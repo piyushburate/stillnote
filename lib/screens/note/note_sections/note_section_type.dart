@@ -15,9 +15,19 @@ enum NoteSectionType {
   ),
   imageBox(
     title: "Image Box",
-    description: "Shows image from given network image url.",
+    description: "Shows image from given image url or file.",
     icon: SvgIcon(
       XIcons.image,
+      width: 20,
+    ),
+    data: {'url': ''},
+    isContainer: false,
+  ),
+  videoBox(
+    title: "Video Box",
+    description: "Shows video from given video url or file.",
+    icon: SvgIcon(
+      XIcons.video,
       width: 20,
     ),
     data: {'url': ''},
@@ -40,7 +50,7 @@ enum NoteSectionType {
       XIcons.code,
       width: 20,
     ),
-    data: {'code': '', 'lang': 'java'},
+    data: {'code': '', 'lang': 'plaintext'},
     isContainer: false,
   ),
   ;

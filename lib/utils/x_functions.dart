@@ -8,6 +8,11 @@ import 'package:share_plus_dialog/share_plus_dialog.dart';
 class XFuns {
   const XFuns._();
 
+  static bool isDarkMode(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    return brightness == Brightness.dark;
+  }
+
   static bool isMobileScreen(double screenWidth) =>
       (screenWidth <= XConsts.mobileSBP);
   static bool isTabletScreen(double screenWidth) =>
@@ -23,13 +28,12 @@ class XFuns {
     BuildContext context,
     String message, {
     int seconds = 3,
-    bool showCloseIcon = false,
+    bool showCloseIcon = true,
   }) {
     return ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         duration: Duration(seconds: seconds),
         showCloseIcon: showCloseIcon,
-        // backgroundColor: AppThemes.darkGreyColor,
         content: Text(message),
       ),
     );

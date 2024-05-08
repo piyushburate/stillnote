@@ -7,8 +7,8 @@ class XThemesManager {
   const XThemesManager._();
 
   static const ThemeMode themeMode = ThemeMode.light;
-  static const String appFontFamily = 'Padauk';
-  static const String titleFontFamily = 'Padauk';
+  static const String appFontFamily = 'Montserrat';
+  static const String titleFontFamily = 'Montserrat';
 
   static void setSystemUIOverlayStyle(BuildContext context) {
     void dark() {

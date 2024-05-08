@@ -19,7 +19,7 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   late ColorScheme colorScheme;
-  double? screenWidth;
+  late double screenWidth;
   List<Notebook> notebooks = [];
   List<Note> notes = [];
   List<AuthUser> users = [];
@@ -79,12 +79,13 @@ class _SearchPageState extends State<SearchPage> {
           ),
         ),
         body: TabBarView(
+          physics: const NeverScrollableScrollPhysics(),
           children: [
             NotebooksGridview(list: notebooks),
             Container(
               constraints: BoxConstraints(
                 maxWidth:
-                    XFuns.isTabletScreen(screenWidth!) ? double.infinity : 550,
+                    XFuns.isTabletScreen(screenWidth) ? double.infinity : 550,
               ),
               child: NotesListview(list: notes),
             ),
@@ -111,6 +112,7 @@ class _SearchPageState extends State<SearchPage> {
         }
       }
     }
+    result.sort((a, b) => b.createdDatetime.compareTo(a.createdDatetime));
     return result;
   }
 
@@ -130,6 +132,7 @@ class _SearchPageState extends State<SearchPage> {
         }
       }
     }
+    result.sort((a, b) => b.createdDatetime.compareTo(a.createdDatetime));
     return result;
   }
 

@@ -2,66 +2,34 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:stillnote/dialogs/image_selector_dialog.dart';
 import 'package:stillnote/screens/note/cubit/note_cubit.dart';
 import 'package:stillnote/screens/note/note_sections/note_section.dart';
 import 'package:stillnote/screens/note/note_sections/note_section_type.dart';
-import 'package:stillnote/utils/x_constants.dart';
 import 'package:stillnote/utils/x_functions.dart';
 import 'package:stillnote/utils/x_icons.dart';
 import 'package:stillnote/widgets/svg_icon.dart';
+import 'package:stillnote/widgets/video_player_view.dart';
 
-class ImageBoxSection extends NoteSection {
+class VideoBoxSection extends NoteSection {
   String url;
-  ImageBoxSection({
+  VideoBoxSection({
     required super.id,
     required super.noteId,
     required this.url,
-  }) : super(type: NoteSectionType.imageBox);
-
-  Future<void> getImageSelector(BuildContext context) async {
-    String? result = await showDialog(
-      context: context,
-      useSafeArea: true,
-      builder: (dialogContext) {
-        return ImageSelectorDialog(
-          uploadFolderPath: '/notes/$noteId/$id/image.jpg',
-          close: (String? url) => Navigator.pop(dialogContext, url),
-        );
-      },
-    );
-    if (result != null && result.isNotEmpty) {
-      await FirebaseFirestore.instance
-          .collection("notes")
-          .doc(noteId)
-          .collection("sections")
-          .doc(id)
-          .update({'url': result});
-      // ignore: use_build_context_synchronously
-      await context.read<NoteCubit>().onNoteModified();
-      // ignore: use_build_context_synchronously
-      XFuns.showSnackbar(context, 'Image updated successfully!');
-      // ignore: use_build_context_synchronously
-      context.read<NoteCubit>().setAccess();
-    }
-  }
+  }) : super(type: NoteSectionType.videoBox);
 
   @override
   Widget widget(BuildContext context, bool isEditable) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    if (url.isNotEmpty) {
+    if (!url.isNotEmpty) {
       return Container(
         constraints: const BoxConstraints(maxWidth: 600),
+        padding: const EdgeInsets.symmetric(vertical: 15),
         alignment: Alignment.center,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
-          child: Image(
-            image: NetworkImage(url),
-            errorBuilder: (context, error, stackTrace) {
-              return Image.asset(XConsts.onErrorImageAsset);
-            },
-          ),
+          child: VideoPlayerView(url: url),
         ),
       );
     }
@@ -75,14 +43,14 @@ class ImageBoxSection extends NoteSection {
         borderRadius: BorderRadius.circular(10),
         color: colorScheme.secondary.withOpacity(0.5),
       ),
-      child: const Text('Image not set!'),
+      child: const Text('Video not set!'),
     );
   }
 
-  factory ImageBoxSection.fromSnapshot(
+  factory VideoBoxSection.fromSnapshot(
       DocumentSnapshot<Map<String, dynamic>> document, String noteId) {
     final data = document.data()!;
-    return ImageBoxSection(id: document.id, noteId: noteId, url: data['url']);
+    return VideoBoxSection(id: document.id, noteId: noteId, url: data['url']);
   }
 
   @override
@@ -104,24 +72,24 @@ class ImageBoxSection extends NoteSection {
           children: [
             SvgIcon(XIcons.copy),
             SizedBox(width: 10),
-            Text("Copy Image URL"),
+            Text("Copy Video URL"),
           ],
         ),
         onTap: () {
           XFuns.copyText(url);
-          XFuns.showSnackbar(context, 'Image URL copied successfully!');
+          XFuns.showSnackbar(context, 'Video URL copied successfully!');
         },
       ),
     ];
     if (state is NoteEditorState) {
       itemList.addAll([
         PopupMenuItem(
-          onTap: () => getImageSelector(context),
+          onTap: () => getVideoSelector(context),
           child: const Row(
             children: [
-              SvgIcon(XIcons.image),
+              SvgIcon(XIcons.video),
               SizedBox(width: 10),
-              Text("Select Image"),
+              Text("Select Video"),
             ],
           ),
         ),
@@ -151,9 +119,43 @@ class ImageBoxSection extends NoteSection {
 
   @override
   Future<void> deleteResources(NoteEditorState state) async {
-    await FirebaseStorage.instance.ref('/notes/$noteId/$id/image.jpg').delete();
+    try {
+      if (url.isNotEmpty) {
+        await FirebaseStorage.instance
+            .ref('/notes/$noteId/$id/video.mp4')
+            .delete();
+      }
+      // ignore: empty_catches
+    } catch (e) {}
   }
 
   @override
-  void initialAction(BuildContext context) => getImageSelector(context);
+  void initialAction(BuildContext context) => getVideoSelector(context);
+
+  Future<void> getVideoSelector(BuildContext context) async {
+    // String? result = await showDialog(
+    //   context: context,
+    //   useSafeArea: true,
+    //   builder: (dialogContext) {
+    //     return ImageSelectorDialog(
+    //       uploadFolderPath: '/notes/$noteId/$id/video.mp4',
+    //       close: (String? url) => Navigator.pop(dialogContext, url),
+    //     );
+    //   },
+    // );
+    // if (result != null && result.isNotEmpty) {
+    //   await FirebaseFirestore.instance
+    //       .collection("notes")
+    //       .doc(noteId)
+    //       .collection("sections")
+    //       .doc(id)
+    //       .update({'url': result});
+    //   // ignore: use_build_context_synchronously
+    //   await context.read<NoteCubit>().onNoteModified();
+    //   // ignore: use_build_context_synchronously
+    //   XFuns.showSnackbar(context, 'Video updated successfully!');
+    //   // ignore: use_build_context_synchronously
+    //   context.read<NoteCubit>().setAccess();
+    // }
+  }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stillnote/screens/note/note_sections/code_view_box_section.dart';
+import 'package:stillnote/models/code_view_language.dart';
 import 'package:stillnote/utils/x_icons.dart';
 import 'package:stillnote/widgets/svg_icon.dart';
 

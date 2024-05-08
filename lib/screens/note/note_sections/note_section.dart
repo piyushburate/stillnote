@@ -5,6 +5,7 @@ import 'package:stillnote/screens/note/note_sections/code_view_box_section.dart'
 import 'package:stillnote/screens/note/note_sections/image_box_section.dart';
 import 'package:stillnote/screens/note/note_sections/note_section_type.dart';
 import 'package:stillnote/screens/note/note_sections/text_box_section.dart';
+import 'package:stillnote/screens/note/note_sections/video_box.section.dart';
 import 'package:stillnote/screens/note/note_sections/yt_video_box_section.dart';
 
 class NoteSection {
@@ -27,6 +28,9 @@ class NoteSection {
     }
     if (type == NoteSectionType.imageBox.name) {
       return ImageBoxSection.fromSnapshot(document, noteId);
+    }
+    if (type == NoteSectionType.videoBox.name) {
+      return VideoBoxSection.fromSnapshot(document, noteId);
     }
     if (type == NoteSectionType.ytVideoBox.name) {
       return YtVideoBoxSection.fromSnapshot(document, noteId);
