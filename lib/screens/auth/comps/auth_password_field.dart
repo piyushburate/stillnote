@@ -21,7 +21,7 @@ class _AuthPasswordFieldState extends State<AuthPasswordField> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Material(
-      color: colorScheme.primary.withOpacity(0.08),
+      color: colorScheme.primary.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(5),
       child: TextFormField(
         controller: widget.controller,

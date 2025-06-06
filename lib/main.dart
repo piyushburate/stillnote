@@ -19,10 +19,10 @@ Future<void> main() async {
   );
   // Updates URL on using push() method
   GoRouter.optionURLReflectsImperativeAPIs = true;
-  setPathUrlStrategy();
   WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
     FlutterNativeSplash.remove();
   });
+  setPathUrlStrategy();
   runApp(const MainApp());
 }
 

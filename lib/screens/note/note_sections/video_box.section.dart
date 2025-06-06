@@ -41,7 +41,7 @@ class VideoBoxSection extends NoteSection {
       alignment: Alignment.center,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: colorScheme.secondary.withOpacity(0.5),
+        color: colorScheme.secondary.withValues(alpha: 0.5),
       ),
       child: const Text('Video not set!'),
     );

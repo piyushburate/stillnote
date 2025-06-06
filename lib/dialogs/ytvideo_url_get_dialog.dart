@@ -19,7 +19,7 @@ class _YtVideoUrlGetDialogState extends State<YtVideoUrlGetDialog> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Dialog(
-      backgroundColor: colorScheme.background.withOpacity(0.1),
+      backgroundColor: colorScheme.surface.withValues(alpha: 0.1),
       insetPadding: const EdgeInsets.all(25),
       child: Container(
         width: double.infinity,

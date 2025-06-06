@@ -77,7 +77,7 @@ class _NotebookDiscussSectionState extends State<NotebookDiscussSection> {
                     '@${msgs[index].$1}',
                     style: TextStyle(
                       fontSize: 12,
-                      color: colorScheme.onSurface.withOpacity(0.8),
+                      color: colorScheme.onSurface.withValues(alpha: 0.8),
                     ),
                   ),
                 ),

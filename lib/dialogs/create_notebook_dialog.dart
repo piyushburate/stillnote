@@ -26,7 +26,7 @@ class _CreateNotebookDialogState extends State<CreateNotebookDialog> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Dialog(
-      backgroundColor: colorScheme.background.withOpacity(0.1),
+      backgroundColor: colorScheme.surface.withValues(alpha: 0.1),
       insetPadding: const EdgeInsets.all(25),
       child: Container(
         width: double.infinity,
@@ -45,7 +45,7 @@ class _CreateNotebookDialogState extends State<CreateNotebookDialog> {
           ),
           boxShadow: <BoxShadow>[
             BoxShadow(
-              color: colorScheme.onSurface.withOpacity(0.3),
+              color: colorScheme.onSurface.withValues(alpha: 0.3),
               offset: const Offset(3, 2),
             ),
           ],

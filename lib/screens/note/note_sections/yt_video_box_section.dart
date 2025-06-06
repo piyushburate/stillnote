@@ -52,7 +52,7 @@ class YtVideoBoxSection extends NoteSection {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: colorScheme.secondary.withOpacity(0.5),
+            color: colorScheme.secondary.withValues(alpha: 0.5),
           ),
           child: const Text('Error playing YouTube video!'),
         );
@@ -65,7 +65,7 @@ class YtVideoBoxSection extends NoteSection {
       alignment: Alignment.center,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: colorScheme.secondary.withOpacity(0.5),
+        color: colorScheme.secondary.withValues(alpha: 0.5),
       ),
       child: const Text('Youtube Video URL not set!'),
     );

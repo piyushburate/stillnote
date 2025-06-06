@@ -47,6 +47,7 @@ firebase_options.dart
 google-services.json
 firebase_app_id_file.json
 GoogleService-Info.plist
+firebase.json
 .firebase/
 
 #flutter generated files
@@ -54,5 +55,4 @@ generated_plugin_registrant.cc
 generated_plugin_registrant.h
 generated_plugins.cmake
 GeneratedPluginRegistrant.swift
-
 pubspec.lock

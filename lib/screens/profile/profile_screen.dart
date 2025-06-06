@@ -69,7 +69,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               shape: RoundedRectangleBorder(
                                 side: BorderSide(
                                   width: 1,
-                                  color: colorScheme.onSurface.withOpacity(0.5),
+                                  color: colorScheme.onSurface
+                                      .withValues(alpha: 0.5),
                                 ),
                                 borderRadius: BorderRadius.circular(5),
                               ),
@@ -199,7 +200,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: TextStyle(
                     fontSize: 15,
                     overflow: TextOverflow.ellipsis,
-                    color: colorScheme.primary.withOpacity(0.8),
+                    color: colorScheme.primary.withValues(alpha: 0.8),
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -210,7 +211,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     fontSize: 16,
                     overflow: TextOverflow.ellipsis,
                     fontWeight: FontWeight.bold,
-                    color: colorScheme.primary.withOpacity(0.8),
+                    color: colorScheme.primary.withValues(alpha: 0.8),
                   ),
                 ),
                 if (FirebaseAuth.instance.currentUser != null)

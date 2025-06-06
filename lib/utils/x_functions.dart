@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stillnote/utils/x_constants.dart';
-import 'package:share_plus_dialog/share_plus_dialog.dart';
+// import 'package:share_plus_dialog/share_plus_dialog.dart';
 
 class XFuns {
   const XFuns._();
@@ -44,11 +45,17 @@ class XFuns {
   }
 
   static shareLink(BuildContext context, String link) {
-    ShareDialog.share(
-      context,
-      link,
-      isUrl: true,
-      platforms: SharePlatform.defaults,
+    // ShareDialog.share(
+    //   context,
+    //   link,
+    //   isUrl: true,
+    //   platforms: SharePlatform.defaults,
+    // );
+
+    SharePlus.instance.share(
+      ShareParams(
+        uri: Uri.parse(link),
+      ),
     );
   }
 

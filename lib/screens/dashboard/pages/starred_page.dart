@@ -33,7 +33,7 @@ class _StarredPageState extends State<StarredPage> {
             child: TabBar(
               indicatorColor: colorScheme.primary,
               labelColor: colorScheme.primary,
-              unselectedLabelColor: colorScheme.primary.withOpacity(0.5),
+              unselectedLabelColor: colorScheme.primary.withValues(alpha: 0.5),
               tabAlignment: TabAlignment.start,
               isScrollable: true,
               tabs: const [

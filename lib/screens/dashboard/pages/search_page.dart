@@ -68,7 +68,7 @@ class _SearchPageState extends State<SearchPage> {
           bottom: TabBar(
             indicatorColor: colorScheme.primary,
             labelColor: colorScheme.primary,
-            unselectedLabelColor: colorScheme.primary.withOpacity(0.5),
+            unselectedLabelColor: colorScheme.primary.withValues(alpha: 0.5),
             tabAlignment: TabAlignment.start,
             isScrollable: true,
             tabs: [

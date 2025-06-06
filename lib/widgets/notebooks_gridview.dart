@@ -61,7 +61,7 @@ class NotebooksGridview extends StatelessWidget {
               title!,
               style: TextStyle(
                 fontSize: 16,
-                color: colorScheme.onSurface.withOpacity(0.6),
+                color: colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
           ),
@@ -90,7 +90,7 @@ class NotebooksGridview extends StatelessWidget {
           ),
           boxShadow: <BoxShadow>[
             BoxShadow(
-              color: colorScheme.onSurface.withOpacity(0.3),
+              color: colorScheme.onSurface.withValues(alpha: 0.3),
               offset: const Offset(3, 2),
             ),
           ],
@@ -132,7 +132,7 @@ class NotebooksGridview extends StatelessWidget {
                   margin:
                       const EdgeInsets.symmetric(vertical: 7, horizontal: 2),
                   decoration: BoxDecoration(
-                    color: colorScheme.onSurface.withOpacity(0.08),
+                    color: colorScheme.onSurface.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: FutureBuilder<int>(

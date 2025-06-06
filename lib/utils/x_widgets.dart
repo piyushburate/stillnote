@@ -83,7 +83,7 @@ class XWidgets {
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 16,
-          color: colorScheme.primary.withOpacity(value ? 1 : 0.5),
+          color: colorScheme.primary.withValues(alpha: value ? 1 : 0.5),
         ),
       ),
       value: value,

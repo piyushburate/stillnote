@@ -14,7 +14,7 @@ class ErrorPage extends StatelessWidget {
           style: TextStyle(
             fontSize: 30,
             fontWeight: FontWeight.bold,
-            color: colorScheme.primary.withOpacity(0.4),
+            color: colorScheme.primary.withValues(alpha: 0.4),
           ),
         ),
       ),

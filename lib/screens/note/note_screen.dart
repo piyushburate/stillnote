@@ -101,8 +101,8 @@ class _NoteScreenState extends State<NoteScreen> {
                               shape: Border.symmetric(
                                 vertical: BorderSide(
                                   width: 1,
-                                  color:
-                                      colorScheme!.secondary.withOpacity(0.3),
+                                  color: colorScheme!.secondary
+                                      .withValues(alpha: 0.3),
                                 ),
                               ),
                               child: notesSection,
@@ -130,7 +130,7 @@ class _NoteScreenState extends State<NoteScreen> {
     return Material(
       shape: Border(
         top: BorderSide(
-            width: 1, color: colorScheme!.secondary.withOpacity(0.3)),
+            width: 1, color: colorScheme!.secondary.withValues(alpha: 0.3)),
       ),
       child: NavigationBar(
         selectedIndex: selectedIndex,
@@ -141,7 +141,7 @@ class _NoteScreenState extends State<NoteScreen> {
             icon: SvgIcon(
               navs[index].$2,
               color: colorScheme!.onSurface
-                  .withOpacity((selectedIndex == index) ? 1 : 0.5),
+                  .withValues(alpha: (selectedIndex == index) ? 1 : 0.5),
             ),
             label: navs[index].$1,
           ),
@@ -155,7 +155,7 @@ class _NoteScreenState extends State<NoteScreen> {
       shape: Border(
         right: BorderSide(
           width: 1,
-          color: colorScheme!.secondary.withOpacity(0.5),
+          color: colorScheme!.secondary.withValues(alpha: 0.5),
         ),
       ),
       child: NavigationRail(
@@ -169,7 +169,7 @@ class _NoteScreenState extends State<NoteScreen> {
             icon: SvgIcon(
               navs[index].$2,
               color: colorScheme!.onSurface
-                  .withOpacity((selectedIndex == index) ? 1 : 0.3),
+                  .withValues(alpha: (selectedIndex == index) ? 1 : 0.3),
             ),
             label: Text(navs[index].$1),
           ),

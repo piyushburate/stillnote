@@ -12,5 +12,26 @@
         "destination": "/index.html"
       }
     ]
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "stillnote",
+          "appId": "1:388480211856:android:7016d8549ab9fe87f1b115",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "stillnote",
+          "configurations": {
+            "android": "1:388480211856:android:7016d8549ab9fe87f1b115",
+            "ios": "1:388480211856:ios:9dd6bcb7f0828043f1b115",
+            "web": "1:388480211856:web:358044a267bbee91f1b115"
+          }
+        }
+      }
+    }
   }
 }

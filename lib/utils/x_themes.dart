@@ -63,8 +63,6 @@ class XThemes {
       onSecondary: XColors.greyDeep,
       error: XColors.red,
       onError: XColors.white,
-      background: XColors.greyHighlight,
-      onBackground: XColors.greyDark,
       surface: XColors.white,
       onSurface: XColors.greyDark,
     ),
@@ -73,7 +71,7 @@ class XThemes {
     navigationRailTheme: _navigationRailThemeData,
     textSelectionTheme:
         const TextSelectionThemeData(cursorColor: XColors.greyDark),
-    dialogTheme: const DialogTheme(
+    dialogTheme: const DialogThemeData(
       backgroundColor: XColors.white,
       surfaceTintColor: XColors.white,
     ),
@@ -84,13 +82,13 @@ class XThemes {
     elevation: 0,
     backgroundColor: XColors.white,
     surfaceTintColor: XColors.white,
-    indicatorColor: XColors.greyDark.withOpacity(0.08),
+    indicatorColor: XColors.greyDark.withValues(alpha: 0.08),
   );
   static final NavigationRailThemeData _navigationRailThemeData =
       NavigationRailThemeData(
     elevation: 0,
     backgroundColor: XColors.white,
-    indicatorColor: XColors.greyDark.withOpacity(0.08),
+    indicatorColor: XColors.greyDark.withValues(alpha: 0.08),
   );
 
   static final AppBarTheme _appBarTheme = AppBarTheme(
@@ -108,7 +106,7 @@ class XThemes {
     shape: Border(
       bottom: BorderSide(
         width: 1,
-        color: XColors.greyNormal.withOpacity(0.3),
+        color: XColors.greyNormal.withValues(alpha: 0.3),
       ),
     ),
   );
@@ -127,8 +125,6 @@ class XDarkThemes {
       onSecondary: XColors.white,
       error: XColors.red,
       onError: XColors.white,
-      background: XColors.greyDeep,
-      onBackground: XColors.greyNormal,
       surface: XColors.greyDark,
       onSurface: XColors.white,
     ),
@@ -137,7 +133,7 @@ class XDarkThemes {
     navigationRailTheme: _navigationRailThemeData,
     textSelectionTheme:
         const TextSelectionThemeData(cursorColor: XColors.white),
-    dialogTheme: const DialogTheme(
+    dialogTheme: const DialogThemeData(
       backgroundColor: XColors.greyDark,
       surfaceTintColor: XColors.greyDark,
     ),
@@ -148,14 +144,14 @@ class XDarkThemes {
     elevation: 0,
     backgroundColor: XColors.greyDark,
     surfaceTintColor: XColors.greyDark,
-    indicatorColor: XColors.white.withOpacity(0.08),
+    indicatorColor: XColors.white.withValues(alpha: 0.08),
   );
 
   static final NavigationRailThemeData _navigationRailThemeData =
       NavigationRailThemeData(
     elevation: 0,
     backgroundColor: XColors.greyDark,
-    indicatorColor: XColors.white.withOpacity(0.08),
+    indicatorColor: XColors.white.withValues(alpha: 0.08),
   );
 
   static final AppBarTheme _appBarTheme = AppBarTheme(
@@ -173,7 +169,7 @@ class XDarkThemes {
     shape: Border(
       bottom: BorderSide(
         width: 1,
-        color: XColors.greyNormal.withOpacity(0.8),
+        color: XColors.greyNormal.withValues(alpha: 0.8),
       ),
     ),
   );

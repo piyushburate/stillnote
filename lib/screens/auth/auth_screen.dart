@@ -78,7 +78,7 @@ class AuthScreen extends StatelessWidget {
                     Text(
                       pageData[0],
                       style: TextStyle(
-                        color: colorScheme.primary.withOpacity(0.5),
+                        color: colorScheme.primary.withValues(alpha: 0.5),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -91,7 +91,7 @@ class AuthScreen extends StatelessWidget {
                             padding: const EdgeInsets.all(10),
                             margin: const EdgeInsets.only(top: 40, bottom: 20),
                             decoration: BoxDecoration(
-                                color: colorScheme.error.withOpacity(0.1),
+                                color: colorScheme.error.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(3)),
                             child: Text(
                               state.error,
@@ -179,7 +179,7 @@ class AuthScreen extends StatelessWidget {
         getEmailTextField(colorScheme),
         const SizedBox(height: 20),
         Material(
-          color: colorScheme.primary.withOpacity(0.08),
+          color: colorScheme.primary.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(5),
           child: TextFormField(
             controller: _usernameController,
@@ -189,7 +189,7 @@ class AuthScreen extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         Material(
-          color: colorScheme.primary.withOpacity(0.08),
+          color: colorScheme.primary.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(5),
           child: TextFormField(
             controller: _nameController,
@@ -235,7 +235,7 @@ class AuthScreen extends StatelessWidget {
 
   Material getEmailTextField(ColorScheme colorScheme) {
     return Material(
-      color: colorScheme.primary.withOpacity(0.08),
+      color: colorScheme.primary.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(5),
       child: TextFormField(
         controller: _emailController,

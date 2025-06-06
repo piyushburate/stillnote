@@ -90,7 +90,8 @@ class _NotebookScreenState extends State<NotebookScreen> {
                             border: Border(
                               left: BorderSide(
                                 width: 1,
-                                color: colorScheme!.primary.withOpacity(0.23),
+                                color: colorScheme!.primary
+                                    .withValues(alpha: 0.23),
                               ),
                             ),
                           ),
@@ -113,7 +114,7 @@ class _NotebookScreenState extends State<NotebookScreen> {
     return Material(
       shape: Border(
         top: BorderSide(
-            width: 1, color: colorScheme!.secondary.withOpacity(0.3)),
+            width: 1, color: colorScheme!.secondary.withValues(alpha: 0.3)),
       ),
       child: NavigationBar(
         selectedIndex: selectedIndex,
@@ -124,7 +125,7 @@ class _NotebookScreenState extends State<NotebookScreen> {
             icon: SvgIcon(
               navs[index].$2,
               color: colorScheme!.onSurface
-                  .withOpacity((selectedIndex == index) ? 1 : 0.5),
+                  .withValues(alpha: (selectedIndex == index) ? 1 : 0.5),
             ),
             label: navs[index].$1,
           ),
@@ -138,7 +139,7 @@ class _NotebookScreenState extends State<NotebookScreen> {
       shape: Border(
         right: BorderSide(
           width: 1,
-          color: colorScheme!.secondary.withOpacity(0.5),
+          color: colorScheme!.secondary.withValues(alpha: 0.5),
         ),
       ),
       child: NavigationRail(
@@ -152,7 +153,7 @@ class _NotebookScreenState extends State<NotebookScreen> {
             icon: SvgIcon(
               navs[index].$2,
               color: colorScheme!.onSurface
-                  .withOpacity((selectedIndex == index) ? 1 : 0.3),
+                  .withValues(alpha: (selectedIndex == index) ? 1 : 0.3),
             ),
             label: Text(navs[index].$1),
           ),

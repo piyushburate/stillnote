@@ -29,7 +29,7 @@ class NoteDashboardSection extends StatelessWidget {
                 'Created on',
                 style: TextStyle(
                   fontSize: 12,
-                  color: colorScheme.onSurface.withOpacity(0.6),
+                  color: colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
               Text(
@@ -45,7 +45,7 @@ class NoteDashboardSection extends StatelessWidget {
                 'Last Modified',
                 style: TextStyle(
                   fontSize: 12,
-                  color: colorScheme.onSurface.withOpacity(0.6),
+                  color: colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
               Text(
@@ -101,7 +101,7 @@ class NoteDashboardSection extends StatelessWidget {
             'Sections',
             style: TextStyle(
               fontSize: 12,
-              color: colorScheme.onSurface.withOpacity(0.6),
+              color: colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ),
         ),

@@ -39,7 +39,7 @@ class _UsersListviewState extends State<UsersListview> {
         shape: RoundedRectangleBorder(
           side: BorderSide(
             width: 1,
-            color: colorScheme.primary.withOpacity(0.2),
+            color: colorScheme.primary.withValues(alpha: 0.2),
           ),
           borderRadius: BorderRadius.circular(5),
         ),

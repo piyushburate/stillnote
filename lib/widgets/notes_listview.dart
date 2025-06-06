@@ -59,7 +59,7 @@ class NotesListview extends StatelessWidget {
               title!,
               style: TextStyle(
                 fontSize: 16,
-                color: colorScheme.onSurface.withOpacity(0.6),
+                color: colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
           ),
@@ -76,7 +76,7 @@ class NotesListview extends StatelessWidget {
         shape: RoundedRectangleBorder(
           side: BorderSide(
             width: 1,
-            color: colorScheme.primary.withOpacity(0.2),
+            color: colorScheme.primary.withValues(alpha: 0.2),
           ),
           borderRadius: BorderRadius.circular(5),
         ),

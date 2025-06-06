@@ -42,7 +42,7 @@ class _VideoSelectorDialogState extends State<VideoSelectorDialog> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Dialog(
-      backgroundColor: colorScheme.background.withOpacity(0.1),
+      backgroundColor: colorScheme.surface.withValues(alpha: 0.1),
       insetPadding: const EdgeInsets.all(25),
       child: Container(
         width: double.infinity,
@@ -136,7 +136,7 @@ class _VideoSelectorDialogState extends State<VideoSelectorDialog> {
             }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: colorScheme.secondary.withOpacity(0.5),
+            backgroundColor: colorScheme.secondary.withValues(alpha: 0.5),
             foregroundColor: colorScheme.onSecondary,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),

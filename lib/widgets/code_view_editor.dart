@@ -29,7 +29,7 @@ class CodeViewEditor extends StatelessWidget {
     return Material(
       clipBehavior: Clip.hardEdge,
       borderRadius: BorderRadius.circular(5),
-      color: colorScheme.onBackground,
+      color: colorScheme.onSurface,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -74,7 +74,7 @@ class CodeViewEditor extends StatelessWidget {
               controller: controller,
               readOnly: !editable,
               onChanged: onChanged,
-              background: colorScheme.background,
+              background: colorScheme.surface,
               textStyle: TextStyle(
                 fontFamily: GoogleFonts.getFont('Anonymous Pro').fontFamily,
               ),
