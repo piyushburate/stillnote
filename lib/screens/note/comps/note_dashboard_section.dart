@@ -67,7 +67,7 @@ class NoteDashboardSection extends StatelessWidget {
                     text: 'Share',
                     onPressed: () => XFuns.shareLink(
                       context,
-                      '${XConsts.appDomain}/note/${noteState.note.id}',
+                      '/note/${noteState.note.id}',
                     ),
                   ),
                   if (noteState is NoteEditorState)

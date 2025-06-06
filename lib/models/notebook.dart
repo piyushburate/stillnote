@@ -111,8 +111,7 @@ class Notebook {
                 Text("Share"),
               ],
             ),
-            onTap: () =>
-                XFuns.shareLink(context, '${XConsts.appDomain}/notebook/$id'),
+            onTap: () => XFuns.shareLink(context, '/notebook/$id'),
           ),
           if (XFuns.isAuthenticated(context))
             PopupMenuItem(

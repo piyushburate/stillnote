@@ -102,8 +102,7 @@ class Note {
                 Text("Share"),
               ],
             ),
-            onTap: () =>
-                XFuns.shareLink(context, '${XConsts.appDomain}/note/$id'),
+            onTap: () => XFuns.shareLink(context, '/note/$id'),
           ),
           if (XFuns.isAuthenticated(context))
             PopupMenuItem(

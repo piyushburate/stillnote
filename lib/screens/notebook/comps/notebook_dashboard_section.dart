@@ -79,7 +79,7 @@ class NotebookDashboardSection extends StatelessWidget {
                 text: 'Share',
                 onPressed: () => XFuns.shareLink(
                   context,
-                  '${XConsts.appDomain}/notebook/${notebookState.notebook.id}',
+                  '/notebook/${notebookState.notebook.id}',
                 ),
               ),
               if (notebookState is NotebookEditorState)

@@ -45,13 +45,6 @@ class XFuns {
   }
 
   static shareLink(BuildContext context, String link) {
-    // ShareDialog.share(
-    //   context,
-    //   link,
-    //   isUrl: true,
-    //   platforms: SharePlatform.defaults,
-    // );
-
     SharePlus.instance.share(
       ShareParams(
         uri: Uri.parse(link),
